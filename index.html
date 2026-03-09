@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>AWS SAA-C03 문제풀이</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --correct: #22c55e;
+      --wrong: #ef4444;
+      --option-bg: #1e293b;
+      --option-hover: #273549;
+      --progress-bg: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #60a5fa;
+      letter-spacing: 0.5px;
+    }
+    .score-badge {
+      background: #1d4ed8;
+      color: #bfdbfe;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* Progress */
+    .progress-wrap {
+      padding: 12px 16px 0;
+    }
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .progress-bar {
+      height: 4px;
+      background: var(--progress-bg);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 16px;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Question card */
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+    .question-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .question-num {
+      background: #1d4ed8;
+      color: #bfdbfe;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+    .multi-badge {
+      background: #7c3aed;
+      color: #ddd6fe;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+    .question-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text);
+      word-break: keep-all;
+    }
+
+    /* Options */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .option-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--option-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 15px;
+      cursor: pointer;
+      text-align: left;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+      transition: all 0.15s ease;
+      word-break: keep-all;
+    }
+    .option-btn:hover:not(:disabled) {
+      background: var(--option-hover);
+      border-color: var(--accent);
+    }
+    .option-btn.selected {
+      border-color: var(--accent);
+      background: #1e3a5f;
+    }
+    .option-btn.correct {
+      border-color: var(--correct);
+      background: #14532d;
+      color: #bbf7d0;
+    }
+    .option-btn.wrong {
+      border-color: var(--wrong);
+      background: #450a0a;
+      color: #fecaca;
+    }
+    .option-btn.dimmed {
+      opacity: 0.45;
+    }
+    .option-btn:disabled {
+      cursor: default;
+    }
+    .option-letter {
+      font-weight: 700;
+      font-size: 14px;
+      min-width: 20px;
+      color: var(--text-muted);
+      padding-top: 1px;
+    }
+    .option-btn.correct .option-letter,
+    .option-btn.wrong .option-letter { color: inherit; }
+    .option-text { flex: 1; }
+
+    /* Answer reveal area */
+    .answer-reveal {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-left: 4px solid var(--correct);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .answer-reveal.show { display: block; }
+    .answer-reveal-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--correct);
+      margin-bottom: 8px;
+    }
+    .answer-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 6px;
+    }
+    .explanation-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      display: none;
+    }
+    .explanation-text.show { display: block; }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-answer {
+      background: #1d4ed8;
+      color: white;
+    }
+    .btn-answer:hover { background: var(--accent-hover); }
+    .btn-answer:disabled { background: #334155; color: var(--text-muted); cursor: default; }
+    .btn-next {
+      background: #16a34a;
+      color: white;
+    }
+    .btn-next:hover { background: #15803d; }
+    .btn-random {
+      background: #7c3aed;
+      color: white;
+    }
+    .btn-random:hover { background: #6d28d9; }
+
+    /* Result panel */
+    .result-icon {
+      font-size: 18px;
+      margin-right: 4px;
+    }
+    .result-msg {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 6px 0;
+      display: none;
+    }
+    .result-msg.show { display: block; }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      justify-content: center;
+    }
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .stat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .stat-dot.correct { background: var(--correct); }
+    .stat-dot.wrong { background: var(--wrong); }
+    .stat-dot.skip { background: #94a3b8; }
+
+    /* Mode selector */
+    .mode-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px 0;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--option-bg);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mode-btn.active {
+      border-color: var(--accent);
+      background: #1e3a5f;
+      color: #60a5fa;
+    }
+
+    @media (max-width: 400px) {
+      .question-text { font-size: 14px; }
+      .option-btn { font-size: 13px; padding: 11px 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">☁️ AWS SAA-C03</div>
+  <div class="score-badge" id="scoreBadge">0 / 0</div>
+</div>
+
+<div class="mode-bar">
+  <button class="mode-btn active" id="modeRandom" onclick="setMode('random')">🔀 랜덤</button>
+  <button class="mode-btn" id="modeSequential" onclick="setMode('sequential')">📋 순서대로</button>
+  <button class="mode-btn" id="modeWrong" onclick="setMode('wrong')">❌ 오답만</button>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <span id="progressText">0 / 800</span>
+    <span id="percentText">0%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="main" id="mainContent">
+  <div class="loading" id="loading">문제를 불러오는 중...</div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-dot correct"></div><span id="statCorrect">정답 0</span></div>
+  <div class="stat-item"><div class="stat-dot wrong"></div><span id="statWrong">오답 0</span></div>
+  <div class="stat-item"><div class="stat-dot skip"></div><span id="statSkip">건너뜀 0</span></div>
+</div>
+
+<script>
+let allQuestions = [];
+let queue = [];
+let current = null;
+let answered = false;
+let stats = { correct: 0, wrong: 0, skip: 0 };
+let wrongIds = new Set();
+let mode = 'random';
+let seqIndex = 0;
+let sessionDone = new Set();
+
+// Fisher-Yates shuffle
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+async function loadQuestions() {
+  try {
+    const res = await fetch('questions.json');
+    allQuestions = await res.json();
+    initMode();
+  } catch (e) {
+    document.getElementById('loading').innerHTML =
+      '<div style="color:#ef4444">⚠️ questions.json 파일을 불러올 수 없습니다.<br><small>같은 폴더에 questions.json이 있는지 확인하세요.</small></div>';
+  }
+}
+
+function setMode(m) {
+  mode = m;
+  ['modeRandom','modeSequential','modeWrong'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById('mode' + m.charAt(0).toUpperCase() + m.slice(1)).classList.add('active');
+  seqIndex = 0;
+  initMode();
+}
+
+function initMode() {
+  if (mode === 'random') {
+    queue = shuffle(allQuestions);
+  } else if (mode === 'sequential') {
+    queue = [...allQuestions];
+  } else if (mode === 'wrong') {
+    const wrongList = allQuestions.filter(q => wrongIds.has(q.id));
+    if (wrongList.length === 0) {
+      showMessage('오답이 없습니다! 계속 문제를 풀어보세요.');
+      return;
+    }
+    queue = shuffle(wrongList);
+  }
+  seqIndex = 0;
+  showNextQuestion();
+}
+
+function showNextQuestion() {
+  answered = false;
+  if (seqIndex >= queue.length) {
+    if (mode === 'wrong') {
+      queue = shuffle(allQuestions.filter(q => wrongIds.has(q.id)));
+      if (queue.length === 0) {
+        showMessage('🎉 오답을 모두 맞혔습니다!');
+        return;
+      }
+    } else {
+      queue = mode === 'random' ? shuffle(allQuestions) : [...allQuestions];
+    }
+    seqIndex = 0;
+  }
+  current = queue[seqIndex];
+  seqIndex++;
+  renderQuestion(current);
+  updateProgress();
+}
+
+function showMessage(msg) {
+  document.getElementById('mainContent').innerHTML =
+    `<div style="text-align:center;padding:60px 20px;color:#94a3b8;font-size:16px">${msg}<br><br>
+    <button class="btn btn-random" style="display:inline-flex;max-width:200px" onclick="setMode('${mode}')">다시 시작</button></div>`;
+}
+
+function renderQuestion(q) {
+  const isMulti = q.question.includes('2개를 선택') || q.question.includes('3개를 선택') || q.question.includes('개를 선택');
+  const optionLetters = Object.keys(q.options);
+
+  let optionsHtml = optionLetters.map(letter => `
+    <button class="option-btn" id="opt_${letter}" onclick="selectOption('${letter}')">
+      <span class="option-letter">${letter}.</span>
+      <span class="option-text">${escHtml(q.options[letter])}</span>
+    </button>
+  `).join('');
+
+  const explanationHtml = q.explanation
+    ? `<div class="explanation-text" id="explanationDiv">${escHtml(q.explanation)}</div>`
+    : '';
+
+  document.getElementById('mainContent').innerHTML = `
+    <div class="question-card">
+      <div class="question-meta">
+        <span class="question-num">문제 ${q.id}</span>
+        ${isMulti ? `<span class="multi-badge">복수 선택</span>` : ''}
+      </div>
+      <div class="question-text" id="questionText">${escHtml(q.question)}</div>
+    </div>
+
+    <div class="options" id="optionsDiv">
+      ${optionsHtml}
+    </div>
+
+    <div class="answer-reveal" id="answerReveal">
+      <div class="answer-reveal-title">정답</div>
+      <div class="answer-text" id="answerText"></div>
+      ${explanationHtml}
+    </div>
+
+    <div class="result-msg" id="resultMsg"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-answer" id="btnAnswer" onclick="showAnswer()">정답 보기</button>
+      <button class="btn btn-next" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  `;
+}
+
+function escHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function selectOption(letter) {
+  if (answered) return;
+  // Toggle selection visually
+  const btn = document.getElementById('opt_' + letter);
+  if (btn.classList.contains('selected')) {
+    btn.classList.remove('selected');
+  } else {
+    // For single-answer questions, deselect others
+    const isMulti = current.question.includes('개를 선택');
+    if (!isMulti) {
+      document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    }
+    btn.classList.add('selected');
+  }
+}
+
+function showAnswer() {
+  if (answered) return;
+  answered = true;
+
+  const correctAnswers = current.answer.replace(/\s/g, '').split(/[,、]/).map(s => s.trim().toUpperCase());
+  const selectedBtns = document.querySelectorAll('.option-btn.selected');
+  const selectedLetters = Array.from(selectedBtns).map(b => b.id.replace('opt_', ''));
+
+  // Determine correctness
+  let isCorrect = false;
+  if (selectedLetters.length > 0) {
+    isCorrect = selectedLetters.length === correctAnswers.length &&
+      selectedLetters.every(l => correctAnswers.includes(l));
+  }
+
+  // Apply colors to all options
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    const letter = btn.id.replace('opt_', '');
+    btn.disabled = true;
+    if (correctAnswers.includes(letter)) {
+      btn.classList.add('correct');
+      btn.classList.remove('selected', 'wrong');
+    } else if (selectedLetters.includes(letter)) {
+      btn.classList.add('wrong');
+      btn.classList.remove('selected');
+    } else {
+      btn.classList.add('dimmed');
+      btn.classList.remove('selected');
+    }
+  });
+
+  // Show answer reveal
+  const reveal = document.getElementById('answerReveal');
+  reveal.classList.add('show');
+  const answerText = document.getElementById('answerText');
+  answerText.textContent = '정답: ' + correctAnswers.join(', ');
+
+  const expDiv = document.getElementById('explanationDiv');
+  if (expDiv && current.explanation) {
+    expDiv.classList.add('show');
+  }
+
+  // Update stats
+  if (selectedLetters.length === 0) {
+    stats.skip++;
+    updateStats();
+  } else if (isCorrect) {
+    stats.correct++;
+    wrongIds.delete(current.id);
+    updateStats();
+    showResult('✅ 정답입니다!', '#22c55e');
+  } else {
+    stats.wrong++;
+    wrongIds.add(current.id);
+    updateStats();
+    showResult('❌ 오답입니다.', '#ef4444');
+  }
+
+  document.getElementById('btnAnswer').disabled = true;
+  document.getElementById('scoreBadge').textContent =
+    stats.correct + ' / ' + (stats.correct + stats.wrong);
+}
+
+function showResult(msg, color) {
+  const el = document.getElementById('resultMsg');
+  el.textContent = msg;
+  el.style.color = color;
+  el.classList.add('show');
+}
+
+function nextQuestion() {
+  if (!answered) {
+    // Skipped
+    stats.skip++;
+    updateStats();
+  }
+  showNextQuestion();
+}
+
+function updateProgress() {
+  const total = allQuestions.length;
+  const done = seqIndex;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressText').textContent = done + ' / ' + total;
+  document.getElementById('percentText').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function updateStats() {
+  document.getElementById('statCorrect').textContent = '정답 ' + stats.correct;
+  document.getElementById('statWrong').textContent = '오답 ' + stats.wrong;
+  document.getElementById('statSkip').textContent = '건너뜀 ' + stats.skip;
+}
+
+// Start
+loadQuestions();
+</script>
+</body>
+</html>
