@@ -465,6 +465,7 @@
   <div class="header-title">☁️ AWS SAA-C03</div>
   <div class="header-right">
     <button class="history-btn" onclick="openHistory()">📋 기록 <span id="historyCount">0</span></button>
+    <button class="history-btn" onclick="resetAll()" title="기록 초기화" style="background:#4b1414;color:#fca5a5">🗑 초기화</button>
     <div class="score-badge" id="scoreBadge">0 / 0</div>
   </div>
 </div>
@@ -534,6 +535,42 @@ let historyPos = null;
 
 let historyFilter = 'all';
 
+const STORAGE_KEY = 'aws_saa_state';
+
+function saveState() {
+  const state = {
+    history,
+    stats,
+    wrongIds: [...wrongIds],
+    mode,
+    seqIndex,
+    currentId: current ? current.id : null,
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const state = JSON.parse(raw);
+    history = (state.history || []).map(e => ({
+      ...e,
+      q: allQuestions.find(q => q.id === e.q.id) || e.q,
+    }));
+    stats = state.stats || { correct: 0, wrong: 0 };
+    wrongIds = new Set(state.wrongIds || []);
+    mode = state.mode || 'random';
+    seqIndex = state.seqIndex || 0;
+    if (state.currentId) {
+      current = allQuestions.find(q => q.id === state.currentId) || null;
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -547,7 +584,23 @@ async function loadQuestions() {
   try {
     const res = await fetch('questions.json');
     allQuestions = await res.json();
-    initMode();
+    const restored = loadState();
+    if (restored && current) {
+      // Restore mode button UI
+      ['modeRandom','modeSequential','modeWrong'].forEach(id =>
+        document.getElementById(id).classList.remove('active'));
+      document.getElementById('mode' + mode.charAt(0).toUpperCase() + mode.slice(1)).classList.add('active');
+      // Rebuild queue from current mode
+      if (mode === 'random') queue = shuffle(allQuestions);
+      else if (mode === 'sequential') queue = [...allQuestions];
+      else queue = shuffle(allQuestions.filter(q => wrongIds.has(q.id)));
+      answered = false;
+      renderQuestion(current, null, null, false);
+      updateStats();
+      updateProgress();
+    } else {
+      initMode();
+    }
   } catch (e) {
     document.getElementById('mainContent').innerHTML =
       '<div class="loading" style="color:#ef4444">⚠️ questions.json 파일을 불러올 수 없습니다.<br><small>같은 폴더에 questions.json이 있는지 확인하세요.</small></div>';
@@ -579,6 +632,7 @@ function initMode() {
   }
   seqIndex = 0;
   historyPos = null;
+  saveState();
   showCurrentQuestion();
 }
 
@@ -598,6 +652,7 @@ function showCurrentQuestion() {
   seqIndex++;
   renderQuestion(current, null, null, false);
   updateProgress();
+  saveState();
 }
 
 function showMessage(msg) {
@@ -759,6 +814,7 @@ function showAnswer() {
   document.getElementById('btnAnswer').disabled = true;
   document.getElementById('btnPrev').disabled = false;
   updateStats();
+  saveState();
 }
 
 function showResult(msg, color) {
@@ -884,6 +940,20 @@ function goToHistoryItem(idx) {
   closeHistory();
   historyPos = idx;
   renderHistoryItem(idx);
+}
+
+function resetAll() {
+  if (!confirm('모든 기록을 초기화하시겠습니까?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  history = [];
+  stats = { correct: 0, wrong: 0 };
+  wrongIds = new Set();
+  mode = 'random';
+  seqIndex = 0;
+  historyPos = null;
+  document.getElementById('historyCount').textContent = 0;
+  updateStats();
+  initMode();
 }
 
 // Start
