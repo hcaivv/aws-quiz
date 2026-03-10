@@ -40,12 +40,19 @@
       position: sticky;
       top: 0;
       z-index: 10;
+      gap: 8px;
     }
     .header-title {
       font-size: 14px;
       font-weight: 700;
       color: #60a5fa;
       letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .score-badge {
       background: #1d4ed8;
@@ -54,12 +61,23 @@
       font-weight: 600;
       padding: 4px 10px;
       border-radius: 20px;
+      white-space: nowrap;
     }
+    .history-btn {
+      background: #374151;
+      color: #d1d5db;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .history-btn:hover { background: #4b5563; }
 
     /* Progress */
-    .progress-wrap {
-      padding: 12px 16px 0;
-    }
+    .progress-wrap { padding: 12px 16px 0; }
     .progress-info {
       display: flex;
       justify-content: space-between;
@@ -80,6 +98,33 @@
       transition: width 0.3s ease;
     }
 
+    /* Mode bar */
+    .mode-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px 0;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--option-bg);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mode-btn.active {
+      border-color: var(--accent);
+      background: #1e3a5f;
+      color: #60a5fa;
+    }
+
     /* Main content */
     .main {
       flex: 1;
@@ -88,6 +133,32 @@
       width: 100%;
       margin: 0 auto;
     }
+
+    /* History view banner */
+    .history-banner {
+      background: #312e81;
+      border: 1px solid #4338ca;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #c7d2fe;
+    }
+    .history-banner-text { font-weight: 600; }
+    .btn-back-current {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-back-current:hover { background: #4338ca; }
 
     /* Question card */
     .question-card {
@@ -148,31 +219,17 @@
       line-height: 1.6;
       transition: all 0.15s ease;
       word-break: keep-all;
+      width: 100%;
     }
     .option-btn:hover:not(:disabled) {
       background: var(--option-hover);
       border-color: var(--accent);
     }
-    .option-btn.selected {
-      border-color: var(--accent);
-      background: #1e3a5f;
-    }
-    .option-btn.correct {
-      border-color: var(--correct);
-      background: #14532d;
-      color: #bbf7d0;
-    }
-    .option-btn.wrong {
-      border-color: var(--wrong);
-      background: #450a0a;
-      color: #fecaca;
-    }
-    .option-btn.dimmed {
-      opacity: 0.45;
-    }
-    .option-btn:disabled {
-      cursor: default;
-    }
+    .option-btn.selected { border-color: var(--accent); background: #1e3a5f; }
+    .option-btn.correct { border-color: var(--correct); background: #14532d; color: #bbf7d0; }
+    .option-btn.wrong { border-color: var(--wrong); background: #450a0a; color: #fecaca; }
+    .option-btn.dimmed { opacity: 0.45; }
+    .option-btn:disabled { cursor: default; }
     .option-letter {
       font-weight: 700;
       font-size: 14px;
@@ -184,7 +241,7 @@
     .option-btn.wrong .option-letter { color: inherit; }
     .option-text { flex: 1; }
 
-    /* Answer reveal area */
+    /* Answer reveal */
     .answer-reveal {
       background: #1e293b;
       border: 1px solid #334155;
@@ -217,6 +274,15 @@
     }
     .explanation-text.show { display: block; }
 
+    /* Result msg */
+    .result-msg {
+      font-size: 13px;
+      text-align: center;
+      padding: 6px 0;
+      display: none;
+    }
+    .result-msg.show { display: block; }
+
     /* Buttons */
     .btn-row {
       display: flex;
@@ -224,48 +290,26 @@
     }
     .btn {
       flex: 1;
-      padding: 14px;
+      padding: 13px 8px;
       border: none;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
     }
-    .btn-answer {
-      background: #1d4ed8;
-      color: white;
-    }
-    .btn-answer:hover { background: var(--accent-hover); }
+    .btn-prev { background: #374151; color: #d1d5db; }
+    .btn-prev:hover:not(:disabled) { background: #4b5563; }
+    .btn-prev:disabled { opacity: 0.35; cursor: default; }
+    .btn-answer { background: #1d4ed8; color: white; }
+    .btn-answer:hover:not(:disabled) { background: var(--accent-hover); }
     .btn-answer:disabled { background: #334155; color: var(--text-muted); cursor: default; }
-    .btn-next {
-      background: #16a34a;
-      color: white;
-    }
+    .btn-next { background: #16a34a; color: white; }
     .btn-next:hover { background: #15803d; }
-    .btn-random {
-      background: #7c3aed;
-      color: white;
-    }
-    .btn-random:hover { background: #6d28d9; }
-
-    /* Result panel */
-    .result-icon {
-      font-size: 18px;
-      margin-right: 4px;
-    }
-    .result-msg {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-align: center;
-      padding: 6px 0;
-      display: none;
-    }
-    .result-msg.show { display: block; }
 
     /* Loading */
     .loading {
@@ -279,7 +323,7 @@
     .stats-bar {
       display: flex;
       gap: 12px;
-      padding: 12px 16px;
+      padding: 10px 16px;
       background: var(--card);
       border-top: 1px solid var(--border);
       justify-content: center;
@@ -291,61 +335,148 @@
       font-size: 13px;
       color: var(--text-muted);
     }
-    .stat-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
+    .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
     .stat-dot.correct { background: var(--correct); }
     .stat-dot.wrong { background: var(--wrong); }
-    .stat-dot.skip { background: #94a3b8; }
+    .stat-dot.total { background: #60a5fa; }
 
-    /* Mode selector */
-    .mode-bar {
+    /* ─── History Modal ─── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      overflow-y: auto;
+    }
+    .modal-overlay.show { display: block; }
+    .modal {
+      background: var(--card);
+      border-radius: 16px;
+      margin: 20px auto;
+      max-width: 700px;
+      width: calc(100% - 32px);
+      overflow: hidden;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--card);
+      z-index: 1;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .modal-close {
+      background: #374151;
+      border: none;
+      color: #d1d5db;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-close:hover { background: #4b5563; }
+    .modal-body { padding: 12px; }
+    .modal-empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .history-item:hover { background: #273549; }
+    .history-result-icon { font-size: 18px; min-width: 22px; text-align: center; }
+    .history-info { flex: 1; min-width: 0; }
+    .history-qnum {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .history-qtext {
+      font-size: 13px;
+      color: var(--text);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .history-answer {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .history-answer.correct { background: #14532d; color: #4ade80; }
+    .history-answer.wrong { background: #450a0a; color: #f87171; }
+    .history-filter {
       display: flex;
       gap: 8px;
-      padding: 12px 16px 0;
-      max-width: 720px;
-      width: 100%;
-      margin: 0 auto;
+      padding: 0 0 12px;
     }
-    .mode-btn {
-      flex: 1;
-      padding: 8px;
+    .filter-btn {
+      padding: 6px 14px;
       border: 1.5px solid var(--border);
-      border-radius: 8px;
-      background: var(--option-bg);
+      border-radius: 20px;
+      background: transparent;
       color: var(--text-muted);
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s;
     }
-    .mode-btn.active {
+    .filter-btn.active {
       border-color: var(--accent);
-      background: #1e3a5f;
       color: #60a5fa;
+      background: #1e3a5f;
     }
 
     @media (max-width: 400px) {
       .question-text { font-size: 14px; }
-      .option-btn { font-size: 13px; padding: 11px 13px; }
+      .option-btn { font-size: 13px; padding: 11px 12px; }
+      .btn { font-size: 13px; }
     }
   </style>
 </head>
 <body>
 
+<!-- Header -->
 <div class="header">
   <div class="header-title">☁️ AWS SAA-C03</div>
-  <div class="score-badge" id="scoreBadge">0 / 0</div>
+  <div class="header-right">
+    <button class="history-btn" onclick="openHistory()">📋 기록 <span id="historyCount">0</span></button>
+    <div class="score-badge" id="scoreBadge">0 / 0</div>
+  </div>
 </div>
 
+<!-- Mode bar -->
 <div class="mode-bar">
   <button class="mode-btn active" id="modeRandom" onclick="setMode('random')">🔀 랜덤</button>
   <button class="mode-btn" id="modeSequential" onclick="setMode('sequential')">📋 순서대로</button>
   <button class="mode-btn" id="modeWrong" onclick="setMode('wrong')">❌ 오답만</button>
 </div>
 
+<!-- Progress -->
 <div class="progress-wrap">
   <div class="progress-info">
     <span id="progressText">0 / 800</span>
@@ -356,14 +487,34 @@
   </div>
 </div>
 
+<!-- Main -->
 <div class="main" id="mainContent">
-  <div class="loading" id="loading">문제를 불러오는 중...</div>
+  <div class="loading">문제를 불러오는 중...</div>
 </div>
 
+<!-- Stats bar -->
 <div class="stats-bar">
   <div class="stat-item"><div class="stat-dot correct"></div><span id="statCorrect">정답 0</span></div>
   <div class="stat-item"><div class="stat-dot wrong"></div><span id="statWrong">오답 0</span></div>
-  <div class="stat-item"><div class="stat-dot skip"></div><span id="statSkip">건너뜀 0</span></div>
+  <div class="stat-item"><div class="stat-dot total"></div><span id="statTotal">총 0문제</span></div>
+</div>
+
+<!-- History Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeHistoryOnBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📋 풀었던 문제 기록</div>
+      <button class="modal-close" onclick="closeHistory()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="history-filter">
+        <button class="filter-btn active" id="filterAll" onclick="setFilter('all')">전체</button>
+        <button class="filter-btn" id="filterCorrect" onclick="setFilter('correct')">✅ 정답</button>
+        <button class="filter-btn" id="filterWrong" onclick="setFilter('wrong')">❌ 오답</button>
+      </div>
+      <div id="historyList"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -371,13 +522,18 @@ let allQuestions = [];
 let queue = [];
 let current = null;
 let answered = false;
-let stats = { correct: 0, wrong: 0, skip: 0 };
+let stats = { correct: 0, wrong: 0 };
 let wrongIds = new Set();
 let mode = 'random';
 let seqIndex = 0;
-let sessionDone = new Set();
 
-// Fisher-Yates shuffle
+// History: array of {q, selectedLetters, isCorrect, correctAnswers}
+let history = [];
+// historyPos: null = showing current question, number = viewing history[historyPos]
+let historyPos = null;
+
+let historyFilter = 'all';
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -393,18 +549,18 @@ async function loadQuestions() {
     allQuestions = await res.json();
     initMode();
   } catch (e) {
-    document.getElementById('loading').innerHTML =
-      '<div style="color:#ef4444">⚠️ questions.json 파일을 불러올 수 없습니다.<br><small>같은 폴더에 questions.json이 있는지 확인하세요.</small></div>';
+    document.getElementById('mainContent').innerHTML =
+      '<div class="loading" style="color:#ef4444">⚠️ questions.json 파일을 불러올 수 없습니다.<br><small>같은 폴더에 questions.json이 있는지 확인하세요.</small></div>';
   }
 }
 
 function setMode(m) {
   mode = m;
-  ['modeRandom','modeSequential','modeWrong'].forEach(id => {
-    document.getElementById(id).classList.remove('active');
-  });
+  ['modeRandom','modeSequential','modeWrong'].forEach(id =>
+    document.getElementById(id).classList.remove('active'));
   document.getElementById('mode' + m.charAt(0).toUpperCase() + m.slice(1)).classList.add('active');
   seqIndex = 0;
+  historyPos = null;
   initMode();
 }
 
@@ -422,18 +578,17 @@ function initMode() {
     queue = shuffle(wrongList);
   }
   seqIndex = 0;
-  showNextQuestion();
+  historyPos = null;
+  showCurrentQuestion();
 }
 
-function showNextQuestion() {
+function showCurrentQuestion() {
+  historyPos = null;
   answered = false;
   if (seqIndex >= queue.length) {
     if (mode === 'wrong') {
       queue = shuffle(allQuestions.filter(q => wrongIds.has(q.id)));
-      if (queue.length === 0) {
-        showMessage('🎉 오답을 모두 맞혔습니다!');
-        return;
-      }
+      if (queue.length === 0) { showMessage('🎉 오답을 모두 맞혔습니다!'); return; }
     } else {
       queue = mode === 'random' ? shuffle(allQuestions) : [...allQuestions];
     }
@@ -441,77 +596,115 @@ function showNextQuestion() {
   }
   current = queue[seqIndex];
   seqIndex++;
-  renderQuestion(current);
+  renderQuestion(current, null, null, false);
   updateProgress();
 }
 
 function showMessage(msg) {
   document.getElementById('mainContent').innerHTML =
     `<div style="text-align:center;padding:60px 20px;color:#94a3b8;font-size:16px">${msg}<br><br>
-    <button class="btn btn-random" style="display:inline-flex;max-width:200px" onclick="setMode('${mode}')">다시 시작</button></div>`;
+    <button class="btn btn-next" style="display:inline-flex;max-width:200px;margin:0 auto" onclick="setMode('${mode}')">다시 시작</button></div>`;
 }
 
-function renderQuestion(q) {
-  const isMulti = q.question.includes('2개를 선택') || q.question.includes('3개를 선택') || q.question.includes('개를 선택');
+// Render a question.
+// selectedLetters: pre-selected (for history), null for fresh
+// isCorrect: null for fresh (unanswered), true/false for history
+// correctAnswers: array, null for fresh
+function renderQuestion(q, selectedLetters, correctAnswers, isHistory) {
+  const isMulti = q.question.includes('개를 선택');
   const optionLetters = Object.keys(q.options);
 
-  let optionsHtml = optionLetters.map(letter => `
-    <button class="option-btn" id="opt_${letter}" onclick="selectOption('${letter}')">
-      <span class="option-letter">${letter}.</span>
-      <span class="option-text">${escHtml(q.options[letter])}</span>
-    </button>
-  `).join('');
+  let historyBannerHtml = '';
+  if (isHistory) {
+    const idx = historyPos;
+    const total = history.length;
+    historyBannerHtml = `
+      <div class="history-banner">
+        <span class="history-banner-text">이전 문제 보기 (${idx + 1} / ${total})</span>
+        <button class="btn-back-current" onclick="goBackToCurrent()">현재 문제로 →</button>
+      </div>`;
+  }
+
+  let optionsHtml = optionLetters.map(letter => {
+    let cls = '';
+    if (isHistory && correctAnswers) {
+      if (correctAnswers.includes(letter)) cls = 'correct';
+      else if (selectedLetters && selectedLetters.includes(letter)) cls = 'wrong';
+      else cls = 'dimmed';
+    }
+    return `
+      <button class="option-btn ${cls}" id="opt_${letter}"
+        ${isHistory ? 'disabled' : `onclick="selectOption('${letter}')"`}>
+        <span class="option-letter">${letter}.</span>
+        <span class="option-text">${escHtml(q.options[letter])}</span>
+      </button>`;
+  }).join('');
 
   const explanationHtml = q.explanation
-    ? `<div class="explanation-text" id="explanationDiv">${escHtml(q.explanation)}</div>`
+    ? `<div class="explanation-text${isHistory ? ' show' : ''}" id="explanationDiv">${escHtml(q.explanation)}</div>`
     : '';
 
+  let answerRevealHtml = '';
+  if (isHistory && correctAnswers) {
+    const entry = history[historyPos];
+    const resultLabel = entry.isCorrect
+      ? `<div class="result-msg show" style="color:#22c55e">✅ 정답이었습니다</div>`
+      : (entry.selectedLetters.length === 0
+          ? `<div class="result-msg show" style="color:#94a3b8">— 정답 보기만 했습니다</div>`
+          : `<div class="result-msg show" style="color:#ef4444">❌ 오답이었습니다</div>`);
+    answerRevealHtml = `
+      <div class="answer-reveal show">
+        <div class="answer-reveal-title">정답</div>
+        <div class="answer-text">정답: ${correctAnswers.join(', ')}</div>
+        ${explanationHtml}
+      </div>
+      ${resultLabel}`;
+  } else {
+    answerRevealHtml = `
+      <div class="answer-reveal" id="answerReveal">
+        <div class="answer-reveal-title">정답</div>
+        <div class="answer-text" id="answerText"></div>
+        ${explanationHtml}
+      </div>
+      <div class="result-msg" id="resultMsg"></div>`;
+  }
+
+  const prevDisabled = (isHistory ? historyPos === 0 : history.length === 0) ? 'disabled' : '';
+  const answerDisabled = isHistory ? 'disabled' : '';
+  const nextLabel = isHistory
+    ? (historyPos < history.length - 1 ? '다음 ▶' : '현재 문제로 →')
+    : '다음 문제 →';
+
   document.getElementById('mainContent').innerHTML = `
+    ${historyBannerHtml}
     <div class="question-card">
       <div class="question-meta">
         <span class="question-num">문제 ${q.id}</span>
         ${isMulti ? `<span class="multi-badge">복수 선택</span>` : ''}
       </div>
-      <div class="question-text" id="questionText">${escHtml(q.question)}</div>
+      <div class="question-text">${escHtml(q.question)}</div>
     </div>
-
-    <div class="options" id="optionsDiv">
-      ${optionsHtml}
-    </div>
-
-    <div class="answer-reveal" id="answerReveal">
-      <div class="answer-reveal-title">정답</div>
-      <div class="answer-text" id="answerText"></div>
-      ${explanationHtml}
-    </div>
-
-    <div class="result-msg" id="resultMsg"></div>
-
+    <div class="options">${optionsHtml}</div>
+    ${answerRevealHtml}
     <div class="btn-row">
-      <button class="btn btn-answer" id="btnAnswer" onclick="showAnswer()">정답 보기</button>
-      <button class="btn btn-next" onclick="nextQuestion()">다음 문제 →</button>
-    </div>
-  `;
+      <button class="btn btn-prev" id="btnPrev" onclick="goPrev()" ${prevDisabled}>◀ 이전</button>
+      <button class="btn btn-answer" id="btnAnswer" onclick="showAnswer()" ${answerDisabled}>정답 보기</button>
+      <button class="btn btn-next" id="btnNext" onclick="goNext()">${nextLabel}</button>
+    </div>`;
 }
 
 function escHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function selectOption(letter) {
-  if (answered) return;
-  // Toggle selection visually
+  if (answered || historyPos !== null) return;
   const btn = document.getElementById('opt_' + letter);
   if (btn.classList.contains('selected')) {
     btn.classList.remove('selected');
   } else {
-    // For single-answer questions, deselect others
-    const isMulti = current.question.includes('개를 선택');
-    if (!isMulti) {
+    if (!current.question.includes('개를 선택')) {
       document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
     }
     btn.classList.add('selected');
@@ -519,66 +712,53 @@ function selectOption(letter) {
 }
 
 function showAnswer() {
-  if (answered) return;
+  if (answered || historyPos !== null) return;
   answered = true;
 
-  const correctAnswers = current.answer.replace(/\s/g, '').split(/[,、]/).map(s => s.trim().toUpperCase());
+  const correctAnswers = current.answer.replace(/\s/g,'').split(/[,、]/).map(s => s.trim().toUpperCase());
   const selectedBtns = document.querySelectorAll('.option-btn.selected');
-  const selectedLetters = Array.from(selectedBtns).map(b => b.id.replace('opt_', ''));
+  const selectedLetters = Array.from(selectedBtns).map(b => b.id.replace('opt_',''));
 
-  // Determine correctness
   let isCorrect = false;
   if (selectedLetters.length > 0) {
     isCorrect = selectedLetters.length === correctAnswers.length &&
       selectedLetters.every(l => correctAnswers.includes(l));
   }
 
-  // Apply colors to all options
   document.querySelectorAll('.option-btn').forEach(btn => {
-    const letter = btn.id.replace('opt_', '');
+    const letter = btn.id.replace('opt_','');
     btn.disabled = true;
     if (correctAnswers.includes(letter)) {
-      btn.classList.add('correct');
-      btn.classList.remove('selected', 'wrong');
+      btn.className = 'option-btn correct';
     } else if (selectedLetters.includes(letter)) {
-      btn.classList.add('wrong');
-      btn.classList.remove('selected');
+      btn.className = 'option-btn wrong';
     } else {
-      btn.classList.add('dimmed');
-      btn.classList.remove('selected');
+      btn.className = 'option-btn dimmed';
     }
   });
 
-  // Show answer reveal
-  const reveal = document.getElementById('answerReveal');
-  reveal.classList.add('show');
-  const answerText = document.getElementById('answerText');
-  answerText.textContent = '정답: ' + correctAnswers.join(', ');
-
+  document.getElementById('answerReveal').classList.add('show');
+  document.getElementById('answerText').textContent = '정답: ' + correctAnswers.join(', ');
   const expDiv = document.getElementById('explanationDiv');
-  if (expDiv && current.explanation) {
-    expDiv.classList.add('show');
-  }
+  if (expDiv && current.explanation) expDiv.classList.add('show');
 
-  // Update stats
   if (selectedLetters.length === 0) {
-    stats.skip++;
-    updateStats();
+    showResult('— 선택 없이 정답 확인', '#94a3b8');
   } else if (isCorrect) {
     stats.correct++;
     wrongIds.delete(current.id);
-    updateStats();
     showResult('✅ 정답입니다!', '#22c55e');
   } else {
     stats.wrong++;
     wrongIds.add(current.id);
-    updateStats();
     showResult('❌ 오답입니다.', '#ef4444');
   }
 
+  // Save to history
+  history.push({ q: current, selectedLetters, isCorrect, correctAnswers });
   document.getElementById('btnAnswer').disabled = true;
-  document.getElementById('scoreBadge').textContent =
-    stats.correct + ' / ' + (stats.correct + stats.wrong);
+  document.getElementById('btnPrev').disabled = false;
+  updateStats();
 }
 
 function showResult(msg, color) {
@@ -588,18 +768,53 @@ function showResult(msg, color) {
   el.classList.add('show');
 }
 
-function nextQuestion() {
-  if (!answered) {
-    // Skipped
-    stats.skip++;
-    updateStats();
+// ── Navigation ──
+
+function goPrev() {
+  if (historyPos === null) {
+    // Go to last history item
+    if (history.length === 0) return;
+    historyPos = history.length - 1;
+  } else if (historyPos > 0) {
+    historyPos--;
+  } else {
+    return; // Already at first
   }
-  showNextQuestion();
+  renderHistoryItem(historyPos);
 }
+
+function goNext() {
+  if (historyPos === null) {
+    // Normal next question
+    showCurrentQuestion();
+  } else if (historyPos < history.length - 1) {
+    historyPos++;
+    renderHistoryItem(historyPos);
+  } else {
+    // At last history item → go to current question
+    goBackToCurrent();
+  }
+}
+
+function goBackToCurrent() {
+  historyPos = null;
+  answered = false;
+  renderQuestion(current, null, null, false);
+  // Re-check if already answered (re-entering from history after answering)
+  // Actually current question is fresh, so just show it unanswered
+}
+
+function renderHistoryItem(idx) {
+  const entry = history[idx];
+  renderQuestion(entry.q, entry.selectedLetters, entry.correctAnswers, true);
+  updateProgress();
+}
+
+// ── Progress / Stats ──
 
 function updateProgress() {
   const total = allQuestions.length;
-  const done = seqIndex;
+  const done = Math.min(seqIndex, total);
   const pct = Math.round((done / total) * 100);
   document.getElementById('progressText').textContent = done + ' / ' + total;
   document.getElementById('percentText').textContent = pct + '%';
@@ -609,7 +824,66 @@ function updateProgress() {
 function updateStats() {
   document.getElementById('statCorrect').textContent = '정답 ' + stats.correct;
   document.getElementById('statWrong').textContent = '오답 ' + stats.wrong;
-  document.getElementById('statSkip').textContent = '건너뜀 ' + stats.skip;
+  document.getElementById('statTotal').textContent = '총 ' + history.length + '문제';
+  document.getElementById('scoreBadge').textContent = stats.correct + ' / ' + (stats.correct + stats.wrong);
+  document.getElementById('historyCount').textContent = history.length;
+}
+
+// ── History Modal ──
+
+function openHistory() {
+  renderHistoryList();
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeHistory() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+function closeHistoryOnBg(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeHistory();
+}
+
+function setFilter(f) {
+  historyFilter = f;
+  ['filterAll','filterCorrect','filterWrong'].forEach(id =>
+    document.getElementById(id).classList.remove('active'));
+  document.getElementById('filter' + f.charAt(0).toUpperCase() + f.slice(1)).classList.add('active');
+  renderHistoryList();
+}
+
+function renderHistoryList() {
+  const list = document.getElementById('historyList');
+  let items = history;
+  if (historyFilter === 'correct') items = history.filter(e => e.isCorrect);
+  if (historyFilter === 'wrong') items = history.filter(e => !e.isCorrect);
+
+  if (items.length === 0) {
+    list.innerHTML = '<div class="modal-empty">아직 풀었던 문제가 없습니다.</div>';
+    return;
+  }
+
+  list.innerHTML = items.map((entry, i) => {
+    const realIdx = history.indexOf(entry);
+    const icon = entry.isCorrect ? '✅' : (entry.selectedLetters.length === 0 ? '👁' : '❌');
+    const answerCls = entry.isCorrect ? 'correct' : 'wrong';
+    const qPreview = entry.q.question.substring(0, 60) + (entry.q.question.length > 60 ? '…' : '');
+    return `
+      <div class="history-item" onclick="goToHistoryItem(${realIdx})">
+        <div class="history-result-icon">${icon}</div>
+        <div class="history-info">
+          <div class="history-qnum">문제 ${entry.q.id}</div>
+          <div class="history-qtext">${escHtml(qPreview)}</div>
+        </div>
+        <div class="history-answer ${answerCls}">정답 ${entry.correctAnswers.join(',')}</div>
+      </div>`;
+  }).join('');
+}
+
+function goToHistoryItem(idx) {
+  closeHistory();
+  historyPos = idx;
+  renderHistoryItem(idx);
 }
 
 // Start
